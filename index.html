@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trimaran remote control</title>
+    <style>
+        /*
+            color palette: 
+            #2C3531
+            #116466
+            #D9B08C
+            #FFCB9A
+            #D1E8E2
+        */
+    </style>    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #fafafa;
+            background-color: rgb(44, 53, 49, 1);               
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #D9B08C;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden
+        }
+
+        
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+        .params {
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;            
+        }
+
+        .sliders {            
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;                        
+            height: -moz-available;
+            height: -webkit-fill-available;
+        }
+
+        .block {
+            display: block;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .block p {
+            padding-top: 5px;
+            text-align: center;
+            justify-content: center;
+            color: #2C3531;
+
+        }
+
+        .block p.label {
+            font-weight: bolder;
+            font-size: x-large;
+            color: #116466;
+            color: #D9B08C;
+        }
+
+        .block p.label::after {
+            content: '°';
+        }
+        .block .control-label {
+            color: #D9B08C;
+        }
+
+        .wrapper {
+            position: relative;
+            height: 20rem;
+            width: 100%;
+        }
+
+        .wrapper::before,
+        .wrapper::after {
+            display: block;
+            position: absolute;
+            z-index: 99;
+            color: #FFCB9A;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            line-height: 1;
+            padding: 0.75rem 0;
+            pointer-events: none;
+        }
+
+        .wrapper::before {
+            content: "+";
+        }
+
+        .wrapper::after {
+            content: "−";
+            bottom: 0;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;            
+            background-color: rgba(17, 100, 102, 1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            padding: 0;
+            width: 20rem;
+            height: 3.5rem;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: row-resize;
+        }
+
+
+        input[type="range"][step] {
+            background-color: transparent;
+            background-image: repeating-linear-gradient(to right, rgba(255, 203, 154, 0.2), rgba(255, 203, 154, 0.2) calc(12.5% - 1px), #05051a 12.5%);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 0;
+            box-shadow: -20rem 0 0 20rem rgba(255, 203, 154, 1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            border: none;
+            width: 0;
+            box-shadow: -20rem 0 0 20rem rgba(255, 203, 154, 1);
+        }
+        input[type="range"]:disabled {
+            background-color: rgba(17, 100, 102, .2);
+        }
+        input[type="range"]:disabled::-webkit-slider-thumb {
+            box-shadow: -20rem 0 0 20rem rgba(255, 203, 154, .2);
+        }
+        input[type="range"]:disabled::-moz-range-thumb {
+            box-shadow: -20rem 0 0 20rem rgba(255, 203, 154, .2);
+        }
+
+        @media (max-height: 550px) { 
+            .title, .params { display: none;}                        
+        }
+
+    </style>
+        <style>
+            /* Checkbox */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 60px;
+                height: 34px;
+            }
+    
+            /* Hide default HTML checkbox */
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+    
+            /* The slider */
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #116466;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+    
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: #D1E8E2;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+    
+            input:checked+.slider {
+                background-color: #FFCB9A;
+            }
+    
+            input:focus+.slider {
+                box-shadow: 0 0 1px #FFCB9A;
+            }
+    
+            input:checked+.slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+    
+            /* Rounded sliders */
+            .slider.round {
+                border-radius: 34px;
+            }
+    
+            .slider.round:before {
+                border-radius: 50%;
+            }
+        </style>    
+</head>
+
+<body>
+    <h1 class="title">Trimaran remote</h1>
+    <main>
+        <div class="params">        
+            <span class="label">Synchroniser les voiles</span>            
+            <label class="switch">
+                <input id="sailssync-switch" type="checkbox" onchange="requestSailsSync(checked)">
+                <span class="slider round"></span>
+            </label>                    
+        </div>
+        <div class="sliders">
+            <div class="block">
+                <p class="label" id="direction-label">-</p>
+                <div class="wrapper">
+                    <input id="direction" type="range" min="-90" max="90" value="0" onchange="requestMoveServo(id, value)" />
+                </div>
+                <p class="control-label">direction</p>
+            </div>
+            <div class="block">
+                <p class="label" id="mainsail-label">-</p>
+                <div class="wrapper">
+                    <input id="mainsail" type="range" min="0" max="90" value="0" onchange="requestMoveServo(id, value)" />
+                </div>
+                <p class="control-label">grand voile</p>
+            </div>
+            <div class="block">
+                <p class="label" id="jibsail-label">-</p>
+                <div class="wrapper">
+                    <input id="jibsail" type="range" min="0" max="90" value="0" onchange="requestMoveServo(id, value)" />
+                </div>
+                <p class="control-label">foc</p>
+            </div>
+        </div>
+    </main>
+    <script lang="javascript">
+        const updateSailsSynchronzation = (value) => {            
+            document.getElementById("jibsail").disabled = value; 
+            document.getElementById("sailssync-switch").checked = value;
+        }        
+
+        const updateRangeValue = (idElement, value) => {
+            document.getElementById(idElement).value = parseInt(value);
+            document.getElementById(idElement).dispatchEvent(new Event('input'))
+        }
+
+        const refreshControls = (state) => {
+            updateRangeValue("direction", state.direction);
+            updateRangeValue("mainsail", state.mainsail);
+            updateRangeValue("jibsail", state.jibsail);
+            updateSailsSynchronzation(state.sync)
+        }
+
+        // Refresh sliders based on servos real positions
+        const updateState = () => {
+            fetch('/state')
+            .then((response) => { response.json().then((state) => refreshControls(state))})
+            .catch((e) => console.error('Failed to update state', e))
+        }
+
+        // Move servo position based on sliders value
+        const requestMoveServo = (id, value) => {            
+            fetch('/move', {
+                method: 'POST',
+                body: JSON.stringify({
+                    target: id === "direction" ? 0 : id === "mainsail" ? 1 : 2,
+                    value: parseInt(value)
+                })
+            })
+            .then((response) => { response.json().then((state) => refreshControls(state))})
+            .catch((e) => console.error('Failed to move servo', e))
+        }
+
+        // Activate or deactivate sails synchronization
+        const requestSailsSync = (value) => { 
+            fetch('/sync', {
+                method: 'POST',
+                body: JSON.stringify({                    
+                    value: value ? 1 : 0
+                })
+            })
+            .then((response) => { response.json().then((state) => refreshControls(state))})
+            .catch((e) => console.error('Failed to update sails synchronization', e))
+        }
+
+        // Init page
+        function init() {
+            document.getElementById("direction").addEventListener('input', (e) => document.getElementById("direction-label").textContent = e.target.value)
+            document.getElementById("mainsail").addEventListener('input', (e) => document.getElementById("mainsail-label").textContent = e.target.value)
+            document.getElementById("jibsail").addEventListener('input', (e) => document.getElementById("jibsail-label").textContent = e.target.value)
+
+            updateState();            
+            setInterval(updateState, 3000);
+        }
+
+        init();
+
+    </script>
+</body>
+
+</html>
